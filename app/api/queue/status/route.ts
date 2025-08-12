@@ -1,0 +1,12 @@
+
+import { NextResponse } from 'next/server';
+import { Store } from '@/lib/queue';
+
+export async function GET(req: Request) {
+  const { searchParams } = new URL(req.url);
+  const queueId = searchParams.get('queueId');
+  const idx = Store.queue.findIndex((q) => q.queueId === queueId);
+  if (idx === -1) return NextResponse.json({ status: 'not_found' });
+  const item = Store.queue[idx];
+  return NextResponse.json({ status: item.status, placeInLine: idx + 1, sessionId: item.sessionId });
+}
